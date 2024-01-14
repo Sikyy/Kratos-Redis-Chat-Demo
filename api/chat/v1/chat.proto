@@ -1,0 +1,62 @@
+syntax = "proto3";
+
+package helloworld.v1;
+
+import "google/api/annotations.proto";
+
+option go_package = "Redis-chat/api/helloworld/v1;v1";
+
+service Chat {
+  
+  rpc SayHello (HelloRequest) returns (HelloReply) {
+    option (google.api.http) = {
+      get: "/test/{name}"
+    };
+  }
+
+  rpc CreateConsumerGroup (CreateConsumerGroupRequest) returns (CreateConsumerGroupReply) {
+    option (google.api.http) = {
+      post: "/createConsumerGroup"
+      body: "*"
+    };
+  }
+
+  rpc CreateStream (CreateStreamRequest) returns (CreateStreamReply) {
+    option (google.api.http) = {
+      post: "/createStream"
+      body: "*"
+    };
+  }
+}
+
+message HelloRequest {
+  string name = 1;
+}
+
+// The response message containing the greetings
+message HelloReply {
+  string message = 1;
+}
+
+message CreateConsumerGroupRequest {
+  string stream = 1;//stream名称
+  string group = 2;//消费者组名称
+  string start = 3;//消息起始位置
+}
+
+message CreateConsumerGroupReply {
+  string message = 1;
+}
+
+
+message CreateStreamRequest {
+  string stream = 1;//stream名称
+  string key = 2;//stream的key
+  string value = 3;//stream的value
+}
+
+message CreateStreamReply {
+  string stream = 1;//stream名称
+  string key = 2;//stream的key
+  string value = 3;//stream的value
+}

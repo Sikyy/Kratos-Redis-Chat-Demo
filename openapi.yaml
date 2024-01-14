@@ -1,0 +1,104 @@
+# Generated with protoc-gen-openapi
+# https://github.com/google/gnostic/tree/master/cmd/protoc-gen-openapi
+
+openapi: 3.0.3
+info:
+    title: Chat API
+    version: 0.0.1
+paths:
+    /createConsumerGroup:
+        post:
+            tags:
+                - Chat
+            operationId: Chat_CreateConsumerGroup
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/helloworld.v1.CreateConsumerGroupRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/helloworld.v1.CreateConsumerGroupReply'
+    /createStream:
+        post:
+            tags:
+                - Chat
+            operationId: Chat_CreateStream
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/helloworld.v1.CreateStreamRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/helloworld.v1.CreateStreamReply'
+    /test/{name}:
+        get:
+            tags:
+                - Chat
+            operationId: Chat_SayHello
+            parameters:
+                - name: name
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/helloworld.v1.HelloReply'
+components:
+    schemas:
+        helloworld.v1.CreateConsumerGroupReply:
+            type: object
+            properties:
+                message:
+                    type: string
+        helloworld.v1.CreateConsumerGroupRequest:
+            type: object
+            properties:
+                stream:
+                    type: string
+                group:
+                    type: string
+                start:
+                    type: string
+        helloworld.v1.CreateStreamReply:
+            type: object
+            properties:
+                stream:
+                    type: string
+                key:
+                    type: string
+                value:
+                    type: string
+        helloworld.v1.CreateStreamRequest:
+            type: object
+            properties:
+                stream:
+                    type: string
+                key:
+                    type: string
+                value:
+                    type: string
+        helloworld.v1.HelloReply:
+            type: object
+            properties:
+                message:
+                    type: string
+            description: The response message containing the greetings
+tags:
+    - name: Chat
