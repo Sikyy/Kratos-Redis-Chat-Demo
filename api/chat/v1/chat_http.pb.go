@@ -22,13 +22,23 @@ const _ = http.SupportPackageIsVersion1
 const OperationChatAddConsumer = "/helloworld.v1.Chat/AddConsumer"
 const OperationChatCreateConsumerGroup = "/helloworld.v1.Chat/CreateConsumerGroup"
 const OperationChatCreateStream = "/helloworld.v1.Chat/CreateStream"
+const OperationChatDelConsumer = "/helloworld.v1.Chat/DelConsumer"
+const OperationChatDelConsumerGroup = "/helloworld.v1.Chat/DelConsumerGroup"
 const OperationChatSayHello = "/helloworld.v1.Chat/SayHello"
+const OperationChatSendMessage = "/helloworld.v1.Chat/SendMessage"
+const OperationChatSubscribe = "/helloworld.v1.Chat/Subscribe"
 
 type ChatHTTPServer interface {
 	AddConsumer(context.Context, *AddConsumerRequest) (*AddConsumerReply, error)
 	CreateConsumerGroup(context.Context, *CreateConsumerGroupRequest) (*CreateConsumerGroupReply, error)
 	CreateStream(context.Context, *CreateStreamRequest) (*CreateStreamReply, error)
+	DelConsumer(context.Context, *DelConsumerRequest) (*DelConsumerReply, error)
+	DelConsumerGroup(context.Context, *DelConsumerGroupRequest) (*DelConsumerGroupReply, error)
 	SayHello(context.Context, *HelloRequest) (*HelloReply, error)
+	// SendMessage发送消息/如果主题不存在，则自动创建主题
+	SendMessage(context.Context, *SendMessageRequest) (*SendMessageReply, error)
+	// Subscribe订阅主题
+	Subscribe(context.Context, *SubscribeRequest) (*SubscribeReply, error)
 }
 
 func RegisterChatHTTPServer(s *http.Server, srv ChatHTTPServer) {
@@ -36,7 +46,11 @@ func RegisterChatHTTPServer(s *http.Server, srv ChatHTTPServer) {
 	r.GET("/test/{name}", _Chat_SayHello0_HTTP_Handler(srv))
 	r.POST("/createConsumerGroup", _Chat_CreateConsumerGroup0_HTTP_Handler(srv))
 	r.POST("/createStream", _Chat_CreateStream0_HTTP_Handler(srv))
+	r.POST("/delConsumerGroup", _Chat_DelConsumerGroup0_HTTP_Handler(srv))
 	r.POST("/addConsumer", _Chat_AddConsumer0_HTTP_Handler(srv))
+	r.POST("/delConsumer", _Chat_DelConsumer0_HTTP_Handler(srv))
+	r.POST("/subscribe", _Chat_Subscribe0_HTTP_Handler(srv))
+	r.POST("/sendMessage", _Chat_SendMessage0_HTTP_Handler(srv))
 }
 
 func _Chat_SayHello0_HTTP_Handler(srv ChatHTTPServer) func(ctx http.Context) error {
@@ -105,6 +119,28 @@ func _Chat_CreateStream0_HTTP_Handler(srv ChatHTTPServer) func(ctx http.Context)
 	}
 }
 
+func _Chat_DelConsumerGroup0_HTTP_Handler(srv ChatHTTPServer) func(ctx http.Context) error {
+	return func(ctx http.Context) error {
+		var in DelConsumerGroupRequest
+		if err := ctx.Bind(&in); err != nil {
+			return err
+		}
+		if err := ctx.BindQuery(&in); err != nil {
+			return err
+		}
+		http.SetOperation(ctx, OperationChatDelConsumerGroup)
+		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
+			return srv.DelConsumerGroup(ctx, req.(*DelConsumerGroupRequest))
+		})
+		out, err := h(ctx, &in)
+		if err != nil {
+			return err
+		}
+		reply := out.(*DelConsumerGroupReply)
+		return ctx.Result(200, reply)
+	}
+}
+
 func _Chat_AddConsumer0_HTTP_Handler(srv ChatHTTPServer) func(ctx http.Context) error {
 	return func(ctx http.Context) error {
 		var in AddConsumerRequest
@@ -127,11 +163,81 @@ func _Chat_AddConsumer0_HTTP_Handler(srv ChatHTTPServer) func(ctx http.Context) 
 	}
 }
 
+func _Chat_DelConsumer0_HTTP_Handler(srv ChatHTTPServer) func(ctx http.Context) error {
+	return func(ctx http.Context) error {
+		var in DelConsumerRequest
+		if err := ctx.Bind(&in); err != nil {
+			return err
+		}
+		if err := ctx.BindQuery(&in); err != nil {
+			return err
+		}
+		http.SetOperation(ctx, OperationChatDelConsumer)
+		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
+			return srv.DelConsumer(ctx, req.(*DelConsumerRequest))
+		})
+		out, err := h(ctx, &in)
+		if err != nil {
+			return err
+		}
+		reply := out.(*DelConsumerReply)
+		return ctx.Result(200, reply)
+	}
+}
+
+func _Chat_Subscribe0_HTTP_Handler(srv ChatHTTPServer) func(ctx http.Context) error {
+	return func(ctx http.Context) error {
+		var in SubscribeRequest
+		if err := ctx.Bind(&in); err != nil {
+			return err
+		}
+		if err := ctx.BindQuery(&in); err != nil {
+			return err
+		}
+		http.SetOperation(ctx, OperationChatSubscribe)
+		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
+			return srv.Subscribe(ctx, req.(*SubscribeRequest))
+		})
+		out, err := h(ctx, &in)
+		if err != nil {
+			return err
+		}
+		reply := out.(*SubscribeReply)
+		return ctx.Result(200, reply)
+	}
+}
+
+func _Chat_SendMessage0_HTTP_Handler(srv ChatHTTPServer) func(ctx http.Context) error {
+	return func(ctx http.Context) error {
+		var in SendMessageRequest
+		if err := ctx.Bind(&in); err != nil {
+			return err
+		}
+		if err := ctx.BindQuery(&in); err != nil {
+			return err
+		}
+		http.SetOperation(ctx, OperationChatSendMessage)
+		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
+			return srv.SendMessage(ctx, req.(*SendMessageRequest))
+		})
+		out, err := h(ctx, &in)
+		if err != nil {
+			return err
+		}
+		reply := out.(*SendMessageReply)
+		return ctx.Result(200, reply)
+	}
+}
+
 type ChatHTTPClient interface {
 	AddConsumer(ctx context.Context, req *AddConsumerRequest, opts ...http.CallOption) (rsp *AddConsumerReply, err error)
 	CreateConsumerGroup(ctx context.Context, req *CreateConsumerGroupRequest, opts ...http.CallOption) (rsp *CreateConsumerGroupReply, err error)
 	CreateStream(ctx context.Context, req *CreateStreamRequest, opts ...http.CallOption) (rsp *CreateStreamReply, err error)
+	DelConsumer(ctx context.Context, req *DelConsumerRequest, opts ...http.CallOption) (rsp *DelConsumerReply, err error)
+	DelConsumerGroup(ctx context.Context, req *DelConsumerGroupRequest, opts ...http.CallOption) (rsp *DelConsumerGroupReply, err error)
 	SayHello(ctx context.Context, req *HelloRequest, opts ...http.CallOption) (rsp *HelloReply, err error)
+	SendMessage(ctx context.Context, req *SendMessageRequest, opts ...http.CallOption) (rsp *SendMessageReply, err error)
+	Subscribe(ctx context.Context, req *SubscribeRequest, opts ...http.CallOption) (rsp *SubscribeReply, err error)
 }
 
 type ChatHTTPClientImpl struct {
@@ -181,6 +287,32 @@ func (c *ChatHTTPClientImpl) CreateStream(ctx context.Context, in *CreateStreamR
 	return &out, err
 }
 
+func (c *ChatHTTPClientImpl) DelConsumer(ctx context.Context, in *DelConsumerRequest, opts ...http.CallOption) (*DelConsumerReply, error) {
+	var out DelConsumerReply
+	pattern := "/delConsumer"
+	path := binding.EncodeURL(pattern, in, false)
+	opts = append(opts, http.Operation(OperationChatDelConsumer))
+	opts = append(opts, http.PathTemplate(pattern))
+	err := c.cc.Invoke(ctx, "POST", path, in, &out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return &out, err
+}
+
+func (c *ChatHTTPClientImpl) DelConsumerGroup(ctx context.Context, in *DelConsumerGroupRequest, opts ...http.CallOption) (*DelConsumerGroupReply, error) {
+	var out DelConsumerGroupReply
+	pattern := "/delConsumerGroup"
+	path := binding.EncodeURL(pattern, in, false)
+	opts = append(opts, http.Operation(OperationChatDelConsumerGroup))
+	opts = append(opts, http.PathTemplate(pattern))
+	err := c.cc.Invoke(ctx, "POST", path, in, &out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return &out, err
+}
+
 func (c *ChatHTTPClientImpl) SayHello(ctx context.Context, in *HelloRequest, opts ...http.CallOption) (*HelloReply, error) {
 	var out HelloReply
 	pattern := "/test/{name}"
@@ -188,6 +320,32 @@ func (c *ChatHTTPClientImpl) SayHello(ctx context.Context, in *HelloRequest, opt
 	opts = append(opts, http.Operation(OperationChatSayHello))
 	opts = append(opts, http.PathTemplate(pattern))
 	err := c.cc.Invoke(ctx, "GET", path, nil, &out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return &out, err
+}
+
+func (c *ChatHTTPClientImpl) SendMessage(ctx context.Context, in *SendMessageRequest, opts ...http.CallOption) (*SendMessageReply, error) {
+	var out SendMessageReply
+	pattern := "/sendMessage"
+	path := binding.EncodeURL(pattern, in, false)
+	opts = append(opts, http.Operation(OperationChatSendMessage))
+	opts = append(opts, http.PathTemplate(pattern))
+	err := c.cc.Invoke(ctx, "POST", path, in, &out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return &out, err
+}
+
+func (c *ChatHTTPClientImpl) Subscribe(ctx context.Context, in *SubscribeRequest, opts ...http.CallOption) (*SubscribeReply, error) {
+	var out SubscribeReply
+	pattern := "/subscribe"
+	path := binding.EncodeURL(pattern, in, false)
+	opts = append(opts, http.Operation(OperationChatSubscribe))
+	opts = append(opts, http.PathTemplate(pattern))
+	err := c.cc.Invoke(ctx, "POST", path, in, &out, opts...)
 	if err != nil {
 		return nil, err
 	}

@@ -20,6 +20,7 @@ func NewChatRepo(data *Data, logger log.Logger) biz.ChatRepo {
 	}
 }
 
+// CreateStream 创建 流
 func (r *chatRepo) CreateStream(ctx context.Context, c *biz.Chat) error {
 	// 实现创建 Redis Stream 的逻辑
 	r.data.rdb.XAdd(ctx, &redis.XAddArgs{
@@ -32,6 +33,7 @@ func (r *chatRepo) CreateStream(ctx context.Context, c *biz.Chat) error {
 	return nil
 }
 
+// CreateConsumerGroup 创建消费者组
 func (r *chatRepo) CreateConsumerGroup(ctx context.Context, c *biz.ConsumerGroup) error {
 	// 实现创建 Redis Consumer Group 的逻辑
 	//传入Streamname 和 Groupname
@@ -41,8 +43,23 @@ func (r *chatRepo) CreateConsumerGroup(ctx context.Context, c *biz.ConsumerGroup
 	return nil
 }
 
+// DelConsumerGroup 删除消费者组
+func (r *chatRepo) DelConsumerGroup(ctx context.Context, c *biz.ConsumerGroup) error {
+	//删除一个 ConsumerGroup
+	r.data.rdb.XGroupDestroy(ctx, c.Stream, c.GroupName)
+	return nil
+}
+
+// AddConsumer 添加消费者
 func (r *chatRepo) AddConsumer(ctx context.Context, c *biz.Consumer) error {
 	//创建一个消费者并将其添加到指定的消费者组中
 	r.data.rdb.XGroupCreateConsumer(ctx, c.Stream, c.GroupName, c.ConsumerName)
+	return nil
+}
+
+// DelConsumer 删除消费者
+func (r *chatRepo) DelConsumer(ctx context.Context, c *biz.Consumer) error {
+	//删除一个消费者
+	r.data.rdb.XGroupDelConsumer(ctx, c.Stream, c.GroupName, c.ConsumerName)
 	return nil
 }

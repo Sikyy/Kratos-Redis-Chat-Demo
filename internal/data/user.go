@@ -28,12 +28,14 @@ func NewUserRepo(data *Data, logger log.Logger) biz.UserRepo {
 	}
 }
 
-// 在 Redis 中创建消费者组
-func (r *userRepo) CreateConsumerGroup(ctx context.Context, groupName string) error {
-	// 实现创建 Redis 消费者组的逻辑
-	if err := r.client.XGroupCreateMkStream(ctx, "yourStream", groupName, "$").Err(); err != nil {
-		r.log.Error("Failed to create consumer group", "error", err)
-		return err
-	}
+// Subscribe 订阅主题
+func (r *userRepo) Subscribe(ctx context.Context, s *biz.Subscribe) error {
+	r.data.rdb.Subscribe(ctx, s.Topic)
+	return nil
+}
+
+// SendMessage 发送消息
+func (r *userRepo) SendMessage(ctx context.Context, m *biz.Message) error {
+	r.data.rdb.Publish(ctx, m.Topic, m.Message)
 	return nil
 }

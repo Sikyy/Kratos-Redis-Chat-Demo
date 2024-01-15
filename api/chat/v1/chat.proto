@@ -28,9 +28,37 @@ service Chat {
     };
   }
 
+  rpc DelConsumerGroup (DelConsumerGroupRequest) returns (DelConsumerGroupReply) {
+    option (google.api.http) = {
+      post: "/delConsumerGroup"
+      body: "*"
+    };
+  }
+
   rpc AddConsumer (AddConsumerRequest) returns (AddConsumerReply) {
     option (google.api.http) = {
       post: "/addConsumer"
+      body: "*"
+    };
+  }
+
+  rpc DelConsumer (DelConsumerRequest) returns (DelConsumerReply) {
+    option (google.api.http) = {
+      post: "/delConsumer"
+      body: "*"
+    };
+  }
+  //订阅主题
+  rpc Subscribe (SubscribeRequest) returns (SubscribeReply) {
+    option (google.api.http) = {
+      post: "/subscribe"
+      body: "*"
+    };
+  }
+  //发送消息/如果主题不存在，则自动创建主题
+  rpc SendMessage (SendMessageRequest) returns (SendMessageReply) {
+    option (google.api.http) = {
+      post: "/sendMessage"
       body: "*"
     };
   }
@@ -51,11 +79,22 @@ message CreateConsumerGroupRequest {
 }
 
 message CreateConsumerGroupReply {
-  bool success = 1;            // 是否成功
+  bool success = 1;             // 是否成功
   string message = 2;           // 提示消息
-  string stream = 3;            // 创建的流名称
-  string consumergroupname = 4;             // 创建的消费者组名称
-  string ID = 5;                // 创建的消费者组ID
+  string stream = 3;            // 创建的所属流名称
+  string consumergroupname = 4; // 创建的消费者组名称
+}
+
+message DelConsumerGroupRequest {
+  string stream = 1;//stream名称
+  string consumergroupname = 2;//消费者组名称
+}
+
+message DelConsumerGroupReply {
+  bool success = 1;             // 是否成功
+  string message = 2;           // 提示消息
+  string stream = 3;            // 删除的所属流名称
+  string consumergroupname = 4; // 删除的消费者组名称
 }
 
 message CreateStreamRequest {
@@ -83,3 +122,41 @@ message AddConsumerReply {
   string consumergroupname = 4; // 属于的消费者组名称
   string consumername = 5;      // 创建的消费者名称
 }
+
+message DelConsumerRequest {
+  string stream = 1;           //stream名称
+  string consumergroupname = 2;//消费者组名称
+  string consumername = 3;     //消费者名称
+}
+
+message DelConsumerReply {
+  bool success = 1;             // 是否成功
+  string message = 2;           // 提示消息
+  string stream = 3;            // 属于的流名称
+  string consumergroupname = 4; // 属于的消费者组名称
+  string consumername = 5;      // 创建的消费者名称
+}
+
+//订阅主题
+message SubscribeRequest { 
+  string topic = 1;//主题名称
+}
+
+message SubscribeReply {
+  string topic = 1;//主题名称
+  string message = 2;//消息内容
+}
+
+//发送消息，使用Pub/Sub 模型，发送消息到指定的主题，如果主题不存在，则自动创建主题
+message SendMessageRequest { 
+  string topic = 1;//主题名称
+  string message = 2;//消息内容
+}
+
+message SendMessageReply {
+  string topic = 1;//主题名称
+  string username = 2;//发送者名称
+  string message = 3;//消息内容
+  bool success = 4;//是否成功
+}
+

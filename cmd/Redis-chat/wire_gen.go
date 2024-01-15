@@ -31,7 +31,9 @@ func wireApp(confServer *conf.Server, confData *conf.Data, logger log.Logger) (*
 	}
 	chatRepo := data.NewChatRepo(dataData, logger)
 	chatUsecase := biz.NewChatUsecase(chatRepo, logger)
-	chatService := service.NewChatService(chatUsecase)
+	userRepo := data.NewUserRepo(dataData, logger)
+	userUsecase := biz.NewUserUsecase(userRepo, logger)
+	chatService := service.NewChatService(chatUsecase, userUsecase)
 	grpcServer := server.NewGRPCServer(confServer, chatService, logger)
 	httpServer := server.NewHTTPServer(confServer, chatService, logger)
 	app := newApp(logger, grpcServer, httpServer)

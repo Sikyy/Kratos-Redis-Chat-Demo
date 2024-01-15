@@ -35,6 +35,8 @@ type ChatRepo interface {
 	CreateStream(ctx context.Context, c *Chat) error
 	CreateConsumerGroup(ctx context.Context, c *ConsumerGroup) error
 	AddConsumer(ctx context.Context, c *Consumer) error
+	DelConsumer(ctx context.Context, c *Consumer) error
+	DelConsumerGroup(ctx context.Context, c *ConsumerGroup) error
 }
 
 type ChatUsecase struct {
@@ -78,6 +80,21 @@ func (uc *ChatUsecase) CreateConsumerGroup(ctx context.Context, stream string, g
 	}, nil
 }
 
+func (uc *ChatUsecase) DelConsumerGroup(ctx context.Context, stream string, groupname string) (*ConsumerGroup, error) {
+	c := &ConsumerGroup{
+		GroupName: groupname,
+		Stream:    stream,
+	}
+	err := uc.repo.DelConsumerGroup(ctx, c)
+	if err != nil {
+		return nil, err
+	}
+	return &ConsumerGroup{
+		GroupName: c.GroupName,
+		Stream:    c.Stream,
+	}, nil
+}
+
 func (uc *ChatUsecase) AddConsumer(ctx context.Context, stream string, groupname string, consumername string) (*Consumer, error) {
 	c := &Consumer{
 		GroupName:    groupname,
@@ -85,6 +102,23 @@ func (uc *ChatUsecase) AddConsumer(ctx context.Context, stream string, groupname
 		ConsumerName: consumername,
 	}
 	err := uc.repo.AddConsumer(ctx, c)
+	if err != nil {
+		return nil, err
+	}
+	return &Consumer{
+		GroupName:    c.GroupName,
+		Stream:       c.Stream,
+		ConsumerName: c.ConsumerName,
+	}, nil
+}
+
+func (uc *ChatUsecase) DelConsumer(ctx context.Context, stream string, groupname string, consumername string) (*Consumer, error) {
+	c := &Consumer{
+		GroupName:    groupname,
+		Stream:       stream,
+		ConsumerName: consumername,
+	}
+	err := uc.repo.DelConsumer(ctx, c)
 	if err != nil {
 		return nil, err
 	}

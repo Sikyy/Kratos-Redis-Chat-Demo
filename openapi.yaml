@@ -60,6 +60,80 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/helloworld.v1.CreateStreamReply'
+    /delConsumer:
+        post:
+            tags:
+                - Chat
+            operationId: Chat_DelConsumer
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/helloworld.v1.DelConsumerRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/helloworld.v1.DelConsumerReply'
+    /delConsumerGroup:
+        post:
+            tags:
+                - Chat
+            operationId: Chat_DelConsumerGroup
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/helloworld.v1.DelConsumerGroupRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/helloworld.v1.DelConsumerGroupReply'
+    /sendMessage:
+        post:
+            tags:
+                - Chat
+            description: 发送消息/如果主题不存在，则自动创建主题
+            operationId: Chat_SendMessage
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/helloworld.v1.SendMessageRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/helloworld.v1.SendMessageReply'
+    /subscribe:
+        post:
+            tags:
+                - Chat
+            description: 订阅主题
+            operationId: Chat_Subscribe
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/helloworld.v1.SubscribeRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/helloworld.v1.SubscribeReply'
     /test/{name}:
         get:
             tags:
@@ -113,8 +187,6 @@ components:
                     type: string
                 consumergroupname:
                     type: string
-                ID:
-                    type: string
         helloworld.v1.CreateConsumerGroupRequest:
             type: object
             properties:
@@ -140,11 +212,83 @@ components:
                     type: string
                 value:
                     type: string
+        helloworld.v1.DelConsumerGroupReply:
+            type: object
+            properties:
+                success:
+                    type: boolean
+                message:
+                    type: string
+                stream:
+                    type: string
+                consumergroupname:
+                    type: string
+        helloworld.v1.DelConsumerGroupRequest:
+            type: object
+            properties:
+                stream:
+                    type: string
+                consumergroupname:
+                    type: string
+        helloworld.v1.DelConsumerReply:
+            type: object
+            properties:
+                success:
+                    type: boolean
+                message:
+                    type: string
+                stream:
+                    type: string
+                consumergroupname:
+                    type: string
+                consumername:
+                    type: string
+        helloworld.v1.DelConsumerRequest:
+            type: object
+            properties:
+                stream:
+                    type: string
+                consumergroupname:
+                    type: string
+                consumername:
+                    type: string
         helloworld.v1.HelloReply:
             type: object
             properties:
                 message:
                     type: string
             description: The response message containing the greetings
+        helloworld.v1.SendMessageReply:
+            type: object
+            properties:
+                topic:
+                    type: string
+                username:
+                    type: string
+                message:
+                    type: string
+                success:
+                    type: boolean
+        helloworld.v1.SendMessageRequest:
+            type: object
+            properties:
+                topic:
+                    type: string
+                message:
+                    type: string
+            description: 发送消息，使用Pub/Sub 模型，发送消息到指定的主题，如果主题不存在，则自动创建主题
+        helloworld.v1.SubscribeReply:
+            type: object
+            properties:
+                topic:
+                    type: string
+                message:
+                    type: string
+        helloworld.v1.SubscribeRequest:
+            type: object
+            properties:
+                topic:
+                    type: string
+            description: 订阅主题
 tags:
     - name: Chat

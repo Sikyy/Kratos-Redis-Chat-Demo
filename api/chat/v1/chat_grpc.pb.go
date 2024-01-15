@@ -22,7 +22,11 @@ const (
 	Chat_SayHello_FullMethodName            = "/helloworld.v1.Chat/SayHello"
 	Chat_CreateConsumerGroup_FullMethodName = "/helloworld.v1.Chat/CreateConsumerGroup"
 	Chat_CreateStream_FullMethodName        = "/helloworld.v1.Chat/CreateStream"
+	Chat_DelConsumerGroup_FullMethodName    = "/helloworld.v1.Chat/DelConsumerGroup"
 	Chat_AddConsumer_FullMethodName         = "/helloworld.v1.Chat/AddConsumer"
+	Chat_DelConsumer_FullMethodName         = "/helloworld.v1.Chat/DelConsumer"
+	Chat_Subscribe_FullMethodName           = "/helloworld.v1.Chat/Subscribe"
+	Chat_SendMessage_FullMethodName         = "/helloworld.v1.Chat/SendMessage"
 )
 
 // ChatClient is the client API for Chat service.
@@ -32,7 +36,13 @@ type ChatClient interface {
 	SayHello(ctx context.Context, in *HelloRequest, opts ...grpc.CallOption) (*HelloReply, error)
 	CreateConsumerGroup(ctx context.Context, in *CreateConsumerGroupRequest, opts ...grpc.CallOption) (*CreateConsumerGroupReply, error)
 	CreateStream(ctx context.Context, in *CreateStreamRequest, opts ...grpc.CallOption) (*CreateStreamReply, error)
+	DelConsumerGroup(ctx context.Context, in *DelConsumerGroupRequest, opts ...grpc.CallOption) (*DelConsumerGroupReply, error)
 	AddConsumer(ctx context.Context, in *AddConsumerRequest, opts ...grpc.CallOption) (*AddConsumerReply, error)
+	DelConsumer(ctx context.Context, in *DelConsumerRequest, opts ...grpc.CallOption) (*DelConsumerReply, error)
+	// 订阅主题
+	Subscribe(ctx context.Context, in *SubscribeRequest, opts ...grpc.CallOption) (*SubscribeReply, error)
+	// 发送消息/如果主题不存在，则自动创建主题
+	SendMessage(ctx context.Context, in *SendMessageRequest, opts ...grpc.CallOption) (*SendMessageReply, error)
 }
 
 type chatClient struct {
@@ -70,9 +80,45 @@ func (c *chatClient) CreateStream(ctx context.Context, in *CreateStreamRequest, 
 	return out, nil
 }
 
+func (c *chatClient) DelConsumerGroup(ctx context.Context, in *DelConsumerGroupRequest, opts ...grpc.CallOption) (*DelConsumerGroupReply, error) {
+	out := new(DelConsumerGroupReply)
+	err := c.cc.Invoke(ctx, Chat_DelConsumerGroup_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *chatClient) AddConsumer(ctx context.Context, in *AddConsumerRequest, opts ...grpc.CallOption) (*AddConsumerReply, error) {
 	out := new(AddConsumerReply)
 	err := c.cc.Invoke(ctx, Chat_AddConsumer_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *chatClient) DelConsumer(ctx context.Context, in *DelConsumerRequest, opts ...grpc.CallOption) (*DelConsumerReply, error) {
+	out := new(DelConsumerReply)
+	err := c.cc.Invoke(ctx, Chat_DelConsumer_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *chatClient) Subscribe(ctx context.Context, in *SubscribeRequest, opts ...grpc.CallOption) (*SubscribeReply, error) {
+	out := new(SubscribeReply)
+	err := c.cc.Invoke(ctx, Chat_Subscribe_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *chatClient) SendMessage(ctx context.Context, in *SendMessageRequest, opts ...grpc.CallOption) (*SendMessageReply, error) {
+	out := new(SendMessageReply)
+	err := c.cc.Invoke(ctx, Chat_SendMessage_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -86,7 +132,13 @@ type ChatServer interface {
 	SayHello(context.Context, *HelloRequest) (*HelloReply, error)
 	CreateConsumerGroup(context.Context, *CreateConsumerGroupRequest) (*CreateConsumerGroupReply, error)
 	CreateStream(context.Context, *CreateStreamRequest) (*CreateStreamReply, error)
+	DelConsumerGroup(context.Context, *DelConsumerGroupRequest) (*DelConsumerGroupReply, error)
 	AddConsumer(context.Context, *AddConsumerRequest) (*AddConsumerReply, error)
+	DelConsumer(context.Context, *DelConsumerRequest) (*DelConsumerReply, error)
+	// 订阅主题
+	Subscribe(context.Context, *SubscribeRequest) (*SubscribeReply, error)
+	// 发送消息/如果主题不存在，则自动创建主题
+	SendMessage(context.Context, *SendMessageRequest) (*SendMessageReply, error)
 	mustEmbedUnimplementedChatServer()
 }
 
@@ -103,8 +155,20 @@ func (UnimplementedChatServer) CreateConsumerGroup(context.Context, *CreateConsu
 func (UnimplementedChatServer) CreateStream(context.Context, *CreateStreamRequest) (*CreateStreamReply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateStream not implemented")
 }
+func (UnimplementedChatServer) DelConsumerGroup(context.Context, *DelConsumerGroupRequest) (*DelConsumerGroupReply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DelConsumerGroup not implemented")
+}
 func (UnimplementedChatServer) AddConsumer(context.Context, *AddConsumerRequest) (*AddConsumerReply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AddConsumer not implemented")
+}
+func (UnimplementedChatServer) DelConsumer(context.Context, *DelConsumerRequest) (*DelConsumerReply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DelConsumer not implemented")
+}
+func (UnimplementedChatServer) Subscribe(context.Context, *SubscribeRequest) (*SubscribeReply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Subscribe not implemented")
+}
+func (UnimplementedChatServer) SendMessage(context.Context, *SendMessageRequest) (*SendMessageReply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method SendMessage not implemented")
 }
 func (UnimplementedChatServer) mustEmbedUnimplementedChatServer() {}
 
@@ -173,6 +237,24 @@ func _Chat_CreateStream_Handler(srv interface{}, ctx context.Context, dec func(i
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Chat_DelConsumerGroup_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DelConsumerGroupRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ChatServer).DelConsumerGroup(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Chat_DelConsumerGroup_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ChatServer).DelConsumerGroup(ctx, req.(*DelConsumerGroupRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _Chat_AddConsumer_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(AddConsumerRequest)
 	if err := dec(in); err != nil {
@@ -187,6 +269,60 @@ func _Chat_AddConsumer_Handler(srv interface{}, ctx context.Context, dec func(in
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(ChatServer).AddConsumer(ctx, req.(*AddConsumerRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Chat_DelConsumer_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DelConsumerRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ChatServer).DelConsumer(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Chat_DelConsumer_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ChatServer).DelConsumer(ctx, req.(*DelConsumerRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Chat_Subscribe_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(SubscribeRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ChatServer).Subscribe(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Chat_Subscribe_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ChatServer).Subscribe(ctx, req.(*SubscribeRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Chat_SendMessage_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(SendMessageRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ChatServer).SendMessage(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Chat_SendMessage_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ChatServer).SendMessage(ctx, req.(*SendMessageRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -211,8 +347,24 @@ var Chat_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _Chat_CreateStream_Handler,
 		},
 		{
+			MethodName: "DelConsumerGroup",
+			Handler:    _Chat_DelConsumerGroup_Handler,
+		},
+		{
 			MethodName: "AddConsumer",
 			Handler:    _Chat_AddConsumer_Handler,
+		},
+		{
+			MethodName: "DelConsumer",
+			Handler:    _Chat_DelConsumer_Handler,
+		},
+		{
+			MethodName: "Subscribe",
+			Handler:    _Chat_Subscribe_Handler,
+		},
+		{
+			MethodName: "SendMessage",
+			Handler:    _Chat_SendMessage_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
