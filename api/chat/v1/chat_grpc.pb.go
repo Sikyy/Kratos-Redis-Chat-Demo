@@ -22,6 +22,7 @@ const (
 	Chat_SayHello_FullMethodName            = "/helloworld.v1.Chat/SayHello"
 	Chat_CreateConsumerGroup_FullMethodName = "/helloworld.v1.Chat/CreateConsumerGroup"
 	Chat_CreateStream_FullMethodName        = "/helloworld.v1.Chat/CreateStream"
+	Chat_AddConsumer_FullMethodName         = "/helloworld.v1.Chat/AddConsumer"
 )
 
 // ChatClient is the client API for Chat service.
@@ -31,6 +32,7 @@ type ChatClient interface {
 	SayHello(ctx context.Context, in *HelloRequest, opts ...grpc.CallOption) (*HelloReply, error)
 	CreateConsumerGroup(ctx context.Context, in *CreateConsumerGroupRequest, opts ...grpc.CallOption) (*CreateConsumerGroupReply, error)
 	CreateStream(ctx context.Context, in *CreateStreamRequest, opts ...grpc.CallOption) (*CreateStreamReply, error)
+	AddConsumer(ctx context.Context, in *AddConsumerRequest, opts ...grpc.CallOption) (*AddConsumerReply, error)
 }
 
 type chatClient struct {
@@ -68,6 +70,15 @@ func (c *chatClient) CreateStream(ctx context.Context, in *CreateStreamRequest, 
 	return out, nil
 }
 
+func (c *chatClient) AddConsumer(ctx context.Context, in *AddConsumerRequest, opts ...grpc.CallOption) (*AddConsumerReply, error) {
+	out := new(AddConsumerReply)
+	err := c.cc.Invoke(ctx, Chat_AddConsumer_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // ChatServer is the server API for Chat service.
 // All implementations must embed UnimplementedChatServer
 // for forward compatibility
@@ -75,6 +86,7 @@ type ChatServer interface {
 	SayHello(context.Context, *HelloRequest) (*HelloReply, error)
 	CreateConsumerGroup(context.Context, *CreateConsumerGroupRequest) (*CreateConsumerGroupReply, error)
 	CreateStream(context.Context, *CreateStreamRequest) (*CreateStreamReply, error)
+	AddConsumer(context.Context, *AddConsumerRequest) (*AddConsumerReply, error)
 	mustEmbedUnimplementedChatServer()
 }
 
@@ -90,6 +102,9 @@ func (UnimplementedChatServer) CreateConsumerGroup(context.Context, *CreateConsu
 }
 func (UnimplementedChatServer) CreateStream(context.Context, *CreateStreamRequest) (*CreateStreamReply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateStream not implemented")
+}
+func (UnimplementedChatServer) AddConsumer(context.Context, *AddConsumerRequest) (*AddConsumerReply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AddConsumer not implemented")
 }
 func (UnimplementedChatServer) mustEmbedUnimplementedChatServer() {}
 
@@ -158,6 +173,24 @@ func _Chat_CreateStream_Handler(srv interface{}, ctx context.Context, dec func(i
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Chat_AddConsumer_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AddConsumerRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ChatServer).AddConsumer(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Chat_AddConsumer_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ChatServer).AddConsumer(ctx, req.(*AddConsumerRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Chat_ServiceDesc is the grpc.ServiceDesc for Chat service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -176,6 +209,10 @@ var Chat_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "CreateStream",
 			Handler:    _Chat_CreateStream_Handler,
+		},
+		{
+			MethodName: "AddConsumer",
+			Handler:    _Chat_AddConsumer_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

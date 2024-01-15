@@ -40,3 +40,9 @@ func (r *chatRepo) CreateConsumerGroup(ctx context.Context, c *biz.ConsumerGroup
 	r.data.rdb.XGroupCreate(ctx, c.Stream, c.GroupName, "$")
 	return nil
 }
+
+func (r *chatRepo) AddConsumer(ctx context.Context, c *biz.Consumer) error {
+	//创建一个消费者并将其添加到指定的消费者组中
+	r.data.rdb.XGroupCreateConsumer(ctx, c.Stream, c.GroupName, c.ConsumerName)
+	return nil
+}

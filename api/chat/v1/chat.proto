@@ -27,6 +27,13 @@ service Chat {
       body: "*"
     };
   }
+
+  rpc AddConsumer (AddConsumerRequest) returns (AddConsumerReply) {
+    option (google.api.http) = {
+      post: "/addConsumer"
+      body: "*"
+    };
+  }
 }
 
 message HelloRequest {
@@ -61,4 +68,18 @@ message CreateStreamReply {
   string stream = 1;//stream名称
   string key = 2;//stream的key
   string value = 3;//stream的value
+}
+
+message AddConsumerRequest {
+  string stream = 1;           //stream名称
+  string consumergroupname = 2;//消费者组名称
+  string consumername = 3;     //消费者名称
+}
+
+message AddConsumerReply {
+  bool success = 1;             // 是否成功
+  string message = 2;           // 提示消息
+  string stream = 3;            // 属于的流名称
+  string consumergroupname = 4; // 属于的消费者组名称
+  string consumername = 5;      // 创建的消费者名称
 }

@@ -19,11 +19,13 @@ var _ = binding.EncodeURL
 
 const _ = http.SupportPackageIsVersion1
 
+const OperationChatAddConsumer = "/helloworld.v1.Chat/AddConsumer"
 const OperationChatCreateConsumerGroup = "/helloworld.v1.Chat/CreateConsumerGroup"
 const OperationChatCreateStream = "/helloworld.v1.Chat/CreateStream"
 const OperationChatSayHello = "/helloworld.v1.Chat/SayHello"
 
 type ChatHTTPServer interface {
+	AddConsumer(context.Context, *AddConsumerRequest) (*AddConsumerReply, error)
 	CreateConsumerGroup(context.Context, *CreateConsumerGroupRequest) (*CreateConsumerGroupReply, error)
 	CreateStream(context.Context, *CreateStreamRequest) (*CreateStreamReply, error)
 	SayHello(context.Context, *HelloRequest) (*HelloReply, error)
@@ -34,6 +36,7 @@ func RegisterChatHTTPServer(s *http.Server, srv ChatHTTPServer) {
 	r.GET("/test/{name}", _Chat_SayHello0_HTTP_Handler(srv))
 	r.POST("/createConsumerGroup", _Chat_CreateConsumerGroup0_HTTP_Handler(srv))
 	r.POST("/createStream", _Chat_CreateStream0_HTTP_Handler(srv))
+	r.POST("/addConsumer", _Chat_AddConsumer0_HTTP_Handler(srv))
 }
 
 func _Chat_SayHello0_HTTP_Handler(srv ChatHTTPServer) func(ctx http.Context) error {
@@ -102,7 +105,30 @@ func _Chat_CreateStream0_HTTP_Handler(srv ChatHTTPServer) func(ctx http.Context)
 	}
 }
 
+func _Chat_AddConsumer0_HTTP_Handler(srv ChatHTTPServer) func(ctx http.Context) error {
+	return func(ctx http.Context) error {
+		var in AddConsumerRequest
+		if err := ctx.Bind(&in); err != nil {
+			return err
+		}
+		if err := ctx.BindQuery(&in); err != nil {
+			return err
+		}
+		http.SetOperation(ctx, OperationChatAddConsumer)
+		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
+			return srv.AddConsumer(ctx, req.(*AddConsumerRequest))
+		})
+		out, err := h(ctx, &in)
+		if err != nil {
+			return err
+		}
+		reply := out.(*AddConsumerReply)
+		return ctx.Result(200, reply)
+	}
+}
+
 type ChatHTTPClient interface {
+	AddConsumer(ctx context.Context, req *AddConsumerRequest, opts ...http.CallOption) (rsp *AddConsumerReply, err error)
 	CreateConsumerGroup(ctx context.Context, req *CreateConsumerGroupRequest, opts ...http.CallOption) (rsp *CreateConsumerGroupReply, err error)
 	CreateStream(ctx context.Context, req *CreateStreamRequest, opts ...http.CallOption) (rsp *CreateStreamReply, err error)
 	SayHello(ctx context.Context, req *HelloRequest, opts ...http.CallOption) (rsp *HelloReply, err error)
@@ -114,6 +140,19 @@ type ChatHTTPClientImpl struct {
 
 func NewChatHTTPClient(client *http.Client) ChatHTTPClient {
 	return &ChatHTTPClientImpl{client}
+}
+
+func (c *ChatHTTPClientImpl) AddConsumer(ctx context.Context, in *AddConsumerRequest, opts ...http.CallOption) (*AddConsumerReply, error) {
+	var out AddConsumerReply
+	pattern := "/addConsumer"
+	path := binding.EncodeURL(pattern, in, false)
+	opts = append(opts, http.Operation(OperationChatAddConsumer))
+	opts = append(opts, http.PathTemplate(pattern))
+	err := c.cc.Invoke(ctx, "POST", path, in, &out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return &out, err
 }
 
 func (c *ChatHTTPClientImpl) CreateConsumerGroup(ctx context.Context, in *CreateConsumerGroupRequest, opts ...http.CallOption) (*CreateConsumerGroupReply, error) {

@@ -42,3 +42,17 @@ func (s *ChatService) CreateConsumerGroup(ctx context.Context, req *v1.CreateCon
 		Message:           "创建消费者组成功",
 	}, nil
 }
+
+func (s *ChatService) AddConsumer(ctx context.Context, req *v1.AddConsumerRequest) (reply *v1.AddConsumerReply, err error) {
+	c, err := s.cc.AddConsumer(ctx, req.Stream, req.Consumergroupname, req.Consumername)
+	if err != nil {
+		return nil, err
+	}
+	return &v1.AddConsumerReply{
+		Stream:            c.Stream,
+		Consumergroupname: c.GroupName,
+		Consumername:      c.ConsumerName,
+		Success:           true,
+		Message:           "添加消费者成功，消费者名为：" + c.ConsumerName + "，消费者组名为：" + c.GroupName + ",流名为：" + c.Stream,
+	}, nil
+}

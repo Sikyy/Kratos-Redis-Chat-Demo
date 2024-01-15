@@ -6,6 +6,24 @@ info:
     title: Chat API
     version: 0.0.1
 paths:
+    /addConsumer:
+        post:
+            tags:
+                - Chat
+            operationId: Chat_AddConsumer
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/helloworld.v1.AddConsumerRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/helloworld.v1.AddConsumerReply'
     /createConsumerGroup:
         post:
             tags:
@@ -62,6 +80,28 @@ paths:
                                 $ref: '#/components/schemas/helloworld.v1.HelloReply'
 components:
     schemas:
+        helloworld.v1.AddConsumerReply:
+            type: object
+            properties:
+                success:
+                    type: boolean
+                message:
+                    type: string
+                stream:
+                    type: string
+                consumergroupname:
+                    type: string
+                consumername:
+                    type: string
+        helloworld.v1.AddConsumerRequest:
+            type: object
+            properties:
+                stream:
+                    type: string
+                consumergroupname:
+                    type: string
+                consumername:
+                    type: string
         helloworld.v1.CreateConsumerGroupReply:
             type: object
             properties:
