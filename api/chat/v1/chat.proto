@@ -40,14 +40,16 @@ message HelloReply {
 
 message CreateConsumerGroupRequest {
   string stream = 1;//stream名称
-  string group = 2;//消费者组名称
-  string start = 3;//消息起始位置
+  string consumergroupname = 2;//消费者组名称
 }
 
 message CreateConsumerGroupReply {
-  string message = 1;
+  bool success = 1;            // 是否成功
+  string message = 2;           // 提示消息
+  string stream = 3;            // 创建的流名称
+  string consumergroupname = 4;             // 创建的消费者组名称
+  string ID = 5;                // 创建的消费者组ID
 }
-
 
 message CreateStreamRequest {
   string stream = 1;//stream名称

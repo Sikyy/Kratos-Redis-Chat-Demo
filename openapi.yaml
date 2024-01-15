@@ -65,16 +65,22 @@ components:
         helloworld.v1.CreateConsumerGroupReply:
             type: object
             properties:
+                success:
+                    type: boolean
                 message:
+                    type: string
+                stream:
+                    type: string
+                consumergroupname:
+                    type: string
+                ID:
                     type: string
         helloworld.v1.CreateConsumerGroupRequest:
             type: object
             properties:
                 stream:
                     type: string
-                group:
-                    type: string
-                start:
+                consumergroupname:
                     type: string
         helloworld.v1.CreateStreamReply:
             type: object

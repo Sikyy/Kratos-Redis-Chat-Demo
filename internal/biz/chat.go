@@ -20,8 +20,14 @@ type Chat struct {
 	Value      string
 }
 
+type ConsumerGroup struct {
+	GroupName string
+	Stream    string
+}
+
 type ChatRepo interface {
 	CreateStream(ctx context.Context, c *Chat) error
+	CreateConsumerGroup(ctx context.Context, c *ConsumerGroup) error
 }
 
 type ChatUsecase struct {
@@ -47,5 +53,20 @@ func (uc *ChatUsecase) CreateStream(ctx context.Context, streamname string, key 
 		StreamName: c.StreamName,
 		Key:        c.Key,
 		Value:      c.Value,
+	}, nil
+}
+
+func (uc *ChatUsecase) CreateConsumerGroup(ctx context.Context, stream string, groupname string) (*ConsumerGroup, error) {
+	c := &ConsumerGroup{
+		GroupName: groupname,
+		Stream:    stream,
+	}
+	err := uc.repo.CreateConsumerGroup(ctx, c)
+	if err != nil {
+		return nil, err
+	}
+	return &ConsumerGroup{
+		GroupName: c.GroupName,
+		Stream:    c.Stream,
 	}, nil
 }

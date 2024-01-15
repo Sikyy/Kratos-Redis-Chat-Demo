@@ -31,3 +31,12 @@ func (r *chatRepo) CreateStream(ctx context.Context, c *biz.Chat) error {
 	})
 	return nil
 }
+
+func (r *chatRepo) CreateConsumerGroup(ctx context.Context, c *biz.ConsumerGroup) error {
+	// 实现创建 Redis Consumer Group 的逻辑
+	//传入Streamname 和 Groupname
+	//创建一个名为 Groupname 的消费者组
+	//设置消费者组的起始位置为 $，表示从最新的消息开始消费
+	r.data.rdb.XGroupCreate(ctx, c.Stream, c.GroupName, "$")
+	return nil
+}
