@@ -96,6 +96,78 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/helloworld.v1.DelConsumerGroupReply'
+    /getSetPeople:
+        post:
+            tags:
+                - Chat
+            operationId: Chat_GetSetPeople
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/helloworld.v1.GetSetPeopleRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/helloworld.v1.GetSetPeopleReply'
+    /getSetPeopleNum:
+        post:
+            tags:
+                - Chat
+            operationId: Chat_GetSetPeopleNum
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/helloworld.v1.GetSetPeopleNumRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/helloworld.v1.GetSetPeopleNumReply'
+    /login:
+        post:
+            tags:
+                - Chat
+            operationId: Chat_Login
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/helloworld.v1.LoginRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/helloworld.v1.LoginReply'
+    /logout:
+        post:
+            tags:
+                - Chat
+            operationId: Chat_Logout
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/helloworld.v1.LogoutRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/helloworld.v1.LogoutReply'
     /sendMessage:
         post:
             tags:
@@ -252,12 +324,78 @@ components:
                     type: string
                 consumername:
                     type: string
+        helloworld.v1.GetSetPeopleNumReply:
+            type: object
+            properties:
+                setname:
+                    type: string
+                num:
+                    type: string
+                message:
+                    type: string
+        helloworld.v1.GetSetPeopleNumRequest:
+            type: object
+            properties:
+                setname:
+                    type: string
+        helloworld.v1.GetSetPeopleReply:
+            type: object
+            properties:
+                setname:
+                    type: string
+                people:
+                    type: array
+                    items:
+                        type: string
+                message:
+                    type: string
+        helloworld.v1.GetSetPeopleRequest:
+            type: object
+            properties:
+                setname:
+                    type: string
         helloworld.v1.HelloReply:
             type: object
             properties:
                 message:
                     type: string
             description: The response message containing the greetings
+        helloworld.v1.LoginReply:
+            type: object
+            properties:
+                username:
+                    type: string
+                setname:
+                    type: string
+                success:
+                    type: boolean
+                message:
+                    type: string
+        helloworld.v1.LoginRequest:
+            type: object
+            properties:
+                username:
+                    type: string
+                setname:
+                    type: string
+        helloworld.v1.LogoutReply:
+            type: object
+            properties:
+                username:
+                    type: string
+                setname:
+                    type: string
+                success:
+                    type: boolean
+                message:
+                    type: string
+        helloworld.v1.LogoutRequest:
+            type: object
+            properties:
+                username:
+                    type: string
+                setname:
+                    type: string
         helloworld.v1.SendMessageReply:
             type: object
             properties:

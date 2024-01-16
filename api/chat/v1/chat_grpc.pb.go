@@ -27,6 +27,10 @@ const (
 	Chat_DelConsumer_FullMethodName         = "/helloworld.v1.Chat/DelConsumer"
 	Chat_Subscribe_FullMethodName           = "/helloworld.v1.Chat/Subscribe"
 	Chat_SendMessage_FullMethodName         = "/helloworld.v1.Chat/SendMessage"
+	Chat_Login_FullMethodName               = "/helloworld.v1.Chat/Login"
+	Chat_Logout_FullMethodName              = "/helloworld.v1.Chat/Logout"
+	Chat_GetSetPeopleNum_FullMethodName     = "/helloworld.v1.Chat/GetSetPeopleNum"
+	Chat_GetSetPeople_FullMethodName        = "/helloworld.v1.Chat/GetSetPeople"
 )
 
 // ChatClient is the client API for Chat service.
@@ -43,6 +47,10 @@ type ChatClient interface {
 	Subscribe(ctx context.Context, in *SubscribeRequest, opts ...grpc.CallOption) (*SubscribeReply, error)
 	// 发送消息/如果主题不存在，则自动创建主题
 	SendMessage(ctx context.Context, in *SendMessageRequest, opts ...grpc.CallOption) (*SendMessageReply, error)
+	Login(ctx context.Context, in *LoginRequest, opts ...grpc.CallOption) (*LoginReply, error)
+	Logout(ctx context.Context, in *LogoutRequest, opts ...grpc.CallOption) (*LogoutReply, error)
+	GetSetPeopleNum(ctx context.Context, in *GetSetPeopleNumRequest, opts ...grpc.CallOption) (*GetSetPeopleNumReply, error)
+	GetSetPeople(ctx context.Context, in *GetSetPeopleRequest, opts ...grpc.CallOption) (*GetSetPeopleReply, error)
 }
 
 type chatClient struct {
@@ -125,6 +133,42 @@ func (c *chatClient) SendMessage(ctx context.Context, in *SendMessageRequest, op
 	return out, nil
 }
 
+func (c *chatClient) Login(ctx context.Context, in *LoginRequest, opts ...grpc.CallOption) (*LoginReply, error) {
+	out := new(LoginReply)
+	err := c.cc.Invoke(ctx, Chat_Login_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *chatClient) Logout(ctx context.Context, in *LogoutRequest, opts ...grpc.CallOption) (*LogoutReply, error) {
+	out := new(LogoutReply)
+	err := c.cc.Invoke(ctx, Chat_Logout_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *chatClient) GetSetPeopleNum(ctx context.Context, in *GetSetPeopleNumRequest, opts ...grpc.CallOption) (*GetSetPeopleNumReply, error) {
+	out := new(GetSetPeopleNumReply)
+	err := c.cc.Invoke(ctx, Chat_GetSetPeopleNum_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *chatClient) GetSetPeople(ctx context.Context, in *GetSetPeopleRequest, opts ...grpc.CallOption) (*GetSetPeopleReply, error) {
+	out := new(GetSetPeopleReply)
+	err := c.cc.Invoke(ctx, Chat_GetSetPeople_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // ChatServer is the server API for Chat service.
 // All implementations must embed UnimplementedChatServer
 // for forward compatibility
@@ -139,6 +183,10 @@ type ChatServer interface {
 	Subscribe(context.Context, *SubscribeRequest) (*SubscribeReply, error)
 	// 发送消息/如果主题不存在，则自动创建主题
 	SendMessage(context.Context, *SendMessageRequest) (*SendMessageReply, error)
+	Login(context.Context, *LoginRequest) (*LoginReply, error)
+	Logout(context.Context, *LogoutRequest) (*LogoutReply, error)
+	GetSetPeopleNum(context.Context, *GetSetPeopleNumRequest) (*GetSetPeopleNumReply, error)
+	GetSetPeople(context.Context, *GetSetPeopleRequest) (*GetSetPeopleReply, error)
 	mustEmbedUnimplementedChatServer()
 }
 
@@ -169,6 +217,18 @@ func (UnimplementedChatServer) Subscribe(context.Context, *SubscribeRequest) (*S
 }
 func (UnimplementedChatServer) SendMessage(context.Context, *SendMessageRequest) (*SendMessageReply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SendMessage not implemented")
+}
+func (UnimplementedChatServer) Login(context.Context, *LoginRequest) (*LoginReply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Login not implemented")
+}
+func (UnimplementedChatServer) Logout(context.Context, *LogoutRequest) (*LogoutReply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Logout not implemented")
+}
+func (UnimplementedChatServer) GetSetPeopleNum(context.Context, *GetSetPeopleNumRequest) (*GetSetPeopleNumReply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetSetPeopleNum not implemented")
+}
+func (UnimplementedChatServer) GetSetPeople(context.Context, *GetSetPeopleRequest) (*GetSetPeopleReply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetSetPeople not implemented")
 }
 func (UnimplementedChatServer) mustEmbedUnimplementedChatServer() {}
 
@@ -327,6 +387,78 @@ func _Chat_SendMessage_Handler(srv interface{}, ctx context.Context, dec func(in
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Chat_Login_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(LoginRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ChatServer).Login(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Chat_Login_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ChatServer).Login(ctx, req.(*LoginRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Chat_Logout_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(LogoutRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ChatServer).Logout(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Chat_Logout_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ChatServer).Logout(ctx, req.(*LogoutRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Chat_GetSetPeopleNum_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetSetPeopleNumRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ChatServer).GetSetPeopleNum(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Chat_GetSetPeopleNum_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ChatServer).GetSetPeopleNum(ctx, req.(*GetSetPeopleNumRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Chat_GetSetPeople_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetSetPeopleRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ChatServer).GetSetPeople(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Chat_GetSetPeople_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ChatServer).GetSetPeople(ctx, req.(*GetSetPeopleRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Chat_ServiceDesc is the grpc.ServiceDesc for Chat service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -365,6 +497,22 @@ var Chat_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "SendMessage",
 			Handler:    _Chat_SendMessage_Handler,
+		},
+		{
+			MethodName: "Login",
+			Handler:    _Chat_Login_Handler,
+		},
+		{
+			MethodName: "Logout",
+			Handler:    _Chat_Logout_Handler,
+		},
+		{
+			MethodName: "GetSetPeopleNum",
+			Handler:    _Chat_GetSetPeopleNum_Handler,
+		},
+		{
+			MethodName: "GetSetPeople",
+			Handler:    _Chat_GetSetPeople_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

@@ -39,3 +39,27 @@ func (r *userRepo) SendMessage(ctx context.Context, m *biz.Message) error {
 	r.data.rdb.Publish(ctx, m.Topic, m.Message)
 	return nil
 }
+
+// Login 登录
+func (r *userRepo) Login(ctx context.Context, u *biz.User) error {
+	r.data.rdb.SAdd(ctx, u.Setname, u.Username)
+	return nil
+}
+
+// Logout 登出
+func (r *userRepo) Logout(ctx context.Context, u *biz.User) error {
+	r.data.rdb.SRem(ctx, u.Setname, u.Username)
+	return nil
+}
+
+// GetSetPeopleNum 获取集合内人数
+func (r *userRepo) GetSetPeopleNum(ctx context.Context, s *biz.Set) (*redis.IntCmd, error) {
+	reult := r.data.rdb.SCard(ctx, s.Setname)
+	return reult, nil
+}
+
+// GetSetPeople 获取集合内人员
+func (r *userRepo) GetSetPeople(ctx context.Context, s *biz.Set) (*redis.StringSliceCmd, error) {
+	result := r.data.rdb.SMembers(ctx, s.Setname)
+	return result, nil
+}
