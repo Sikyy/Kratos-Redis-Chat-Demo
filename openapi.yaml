@@ -132,11 +132,17 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/helloworld.v1.GetSetPeopleNumReply'
-    /login:
+    /login/{username}:
         post:
             tags:
                 - Chat
             operationId: Chat_Login
+            parameters:
+                - name: username
+                  in: path
+                  required: true
+                  schema:
+                    type: string
             requestBody:
                 content:
                     application/json:
@@ -150,11 +156,17 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/helloworld.v1.LoginReply'
-    /logout:
+    /logout/{username}:
         post:
             tags:
                 - Chat
             operationId: Chat_Logout
+            parameters:
+                - name: username
+                  in: path
+                  required: true
+                  schema:
+                    type: string
             requestBody:
                 content:
                     application/json:

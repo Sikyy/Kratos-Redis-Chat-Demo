@@ -64,13 +64,13 @@ service Chat {
   }
   rpc Login (LoginRequest) returns (LoginReply) {
     option (google.api.http) = {
-      post: "/login"
+      post: "/login/{username}"
       body: "*"
     };
   }
   rpc Logout (LogoutRequest) returns (LogoutReply) {
     option (google.api.http) = {
-      post: "/logout"
+      post: "/logout/{username}"
       body: "*"
     };
   }

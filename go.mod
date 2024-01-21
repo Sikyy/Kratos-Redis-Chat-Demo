@@ -11,6 +11,8 @@ require (
 	google.golang.org/protobuf v1.31.0
 )
 
+require github.com/felixge/httpsnoop v1.0.3 // indirect
+
 require (
 	github.com/cespare/xxhash/v2 v2.2.0 // indirect
 	github.com/dgryski/go-rendezvous v0.0.0-20200823014737-9f7001d12a5f // indirect
@@ -21,6 +23,7 @@ require (
 	github.com/go-playground/form/v4 v4.2.0 // indirect
 	github.com/golang/protobuf v1.5.3 // indirect
 	github.com/google/uuid v1.5.0
+	github.com/gorilla/handlers v1.5.2
 	github.com/gorilla/mux v1.8.0 // indirect
 	github.com/imdario/mergo v0.3.16 // indirect
 	github.com/kr/text v0.2.0 // indirect

@@ -59,8 +59,8 @@ func RegisterChatHTTPServer(s *http.Server, srv ChatHTTPServer) {
 	r.POST("/delConsumer", _Chat_DelConsumer0_HTTP_Handler(srv))
 	r.POST("/subscribe", _Chat_Subscribe0_HTTP_Handler(srv))
 	r.POST("/sendMessage", _Chat_SendMessage0_HTTP_Handler(srv))
-	r.POST("/login", _Chat_Login0_HTTP_Handler(srv))
-	r.POST("/logout", _Chat_Logout0_HTTP_Handler(srv))
+	r.POST("/login/{username}", _Chat_Login0_HTTP_Handler(srv))
+	r.POST("/logout/{username}", _Chat_Logout0_HTTP_Handler(srv))
 	r.POST("/getSetPeopleNum", _Chat_GetSetPeopleNum0_HTTP_Handler(srv))
 	r.POST("/getSetPeople", _Chat_GetSetPeople0_HTTP_Handler(srv))
 }
@@ -250,6 +250,9 @@ func _Chat_Login0_HTTP_Handler(srv ChatHTTPServer) func(ctx http.Context) error 
 		if err := ctx.BindQuery(&in); err != nil {
 			return err
 		}
+		if err := ctx.BindVars(&in); err != nil {
+			return err
+		}
 		http.SetOperation(ctx, OperationChatLogin)
 		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
 			return srv.Login(ctx, req.(*LoginRequest))
@@ -270,6 +273,9 @@ func _Chat_Logout0_HTTP_Handler(srv ChatHTTPServer) func(ctx http.Context) error
 			return err
 		}
 		if err := ctx.BindQuery(&in); err != nil {
+			return err
+		}
+		if err := ctx.BindVars(&in); err != nil {
 			return err
 		}
 		http.SetOperation(ctx, OperationChatLogout)
@@ -445,7 +451,7 @@ func (c *ChatHTTPClientImpl) GetSetPeopleNum(ctx context.Context, in *GetSetPeop
 
 func (c *ChatHTTPClientImpl) Login(ctx context.Context, in *LoginRequest, opts ...http.CallOption) (*LoginReply, error) {
 	var out LoginReply
-	pattern := "/login"
+	pattern := "/login/{username}"
 	path := binding.EncodeURL(pattern, in, false)
 	opts = append(opts, http.Operation(OperationChatLogin))
 	opts = append(opts, http.PathTemplate(pattern))
@@ -458,7 +464,7 @@ func (c *ChatHTTPClientImpl) Login(ctx context.Context, in *LoginRequest, opts .
 
 func (c *ChatHTTPClientImpl) Logout(ctx context.Context, in *LogoutRequest, opts ...http.CallOption) (*LogoutReply, error) {
 	var out LogoutReply
-	pattern := "/logout"
+	pattern := "/logout/{username}"
 	path := binding.EncodeURL(pattern, in, false)
 	opts = append(opts, http.Operation(OperationChatLogout))
 	opts = append(opts, http.PathTemplate(pattern))
