@@ -2,6 +2,7 @@ package biz
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/go-kratos/kratos/v2/log"
 	"github.com/redis/go-redis/v9"
@@ -35,9 +36,9 @@ type UserRepo interface {
 	//发送消息
 	SendMessage(ctx context.Context, m *Message) error
 	//登录
-	Login(ctx context.Context, u *User) error
+	Login(ctx context.Context, u *User) (*redis.IntCmd, error)
 	//登出
-	Logout(ctx context.Context, u *User) error
+	Logout(ctx context.Context, u *User) (*redis.IntCmd, error)
 	//获取集合内人数
 	GetSetPeopleNum(ctx context.Context, s *Set) (*redis.IntCmd, error)
 	//获取集合内人员
@@ -92,10 +93,11 @@ func (uc *UserUsecase) Login(ctx context.Context, setname string, username strin
 		Setname:  setname,
 		Username: username,
 	}
-	err := uc.ur.Login(ctx, u)
+	result, err := uc.ur.Login(ctx, u)
 	if err != nil {
 		return nil, err
 	}
+	fmt.Printf("添加成员%v成功,此次添加成员个数为:%v", u.Username, result.Val())
 	return &User{
 		Setname:  u.Setname,
 		Username: u.Username,
@@ -108,10 +110,11 @@ func (uc *UserUsecase) Logout(ctx context.Context, setname string, username stri
 		Setname:  setname,
 		Username: username,
 	}
-	err := uc.ur.Logout(ctx, u)
+	result, err := uc.ur.Logout(ctx, u)
 	if err != nil {
 		return nil, err
 	}
+	fmt.Printf("删除成员%v成功,此次删除成员个数为:%v", u.Username, result.Val())
 	return &User{
 		Setname:  u.Setname,
 		Username: u.Username,

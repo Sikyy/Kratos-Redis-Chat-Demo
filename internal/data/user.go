@@ -41,15 +41,21 @@ func (r *userRepo) SendMessage(ctx context.Context, m *biz.Message) error {
 }
 
 // Login 登录
-func (r *userRepo) Login(ctx context.Context, u *biz.User) error {
-	r.data.rdb.SAdd(ctx, u.Setname, u.Username)
-	return nil
+func (r *userRepo) Login(ctx context.Context, u *biz.User) (*redis.IntCmd, error) {
+	reult := r.data.rdb.SAdd(ctx, u.Setname, u.Username)
+	if reult.Err() != nil {
+		return nil, reult.Err()
+	}
+	return reult, nil
 }
 
 // Logout 登出
-func (r *userRepo) Logout(ctx context.Context, u *biz.User) error {
-	r.data.rdb.SRem(ctx, u.Setname, u.Username)
-	return nil
+func (r *userRepo) Logout(ctx context.Context, u *biz.User) (*redis.IntCmd, error) {
+	reult := r.data.rdb.SRem(ctx, u.Setname, u.Username)
+	if reult.Err() != nil {
+		return nil, reult.Err()
+	}
+	return reult, nil
 }
 
 // GetSetPeopleNum 获取集合内人数

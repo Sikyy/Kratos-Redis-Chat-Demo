@@ -32,8 +32,8 @@ message Data {
   }
   message Redis {
     string addr = 1;
-    string password = 2;
-    string username = 3;
+    string username = 2;
+    string password = 3;
     int32 db = 4;
     google.protobuf.Duration read_timeout = 5;
     google.protobuf.Duration write_timeout = 6;
