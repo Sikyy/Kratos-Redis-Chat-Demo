@@ -51,18 +51,18 @@ type ChatHTTPServer interface {
 
 func RegisterChatHTTPServer(s *http.Server, srv ChatHTTPServer) {
 	r := s.Route("/")
-	r.GET("/test/{name}", _Chat_SayHello0_HTTP_Handler(srv))
-	r.POST("/createConsumerGroup", _Chat_CreateConsumerGroup0_HTTP_Handler(srv))
-	r.POST("/createStream", _Chat_CreateStream0_HTTP_Handler(srv))
-	r.POST("/delConsumerGroup", _Chat_DelConsumerGroup0_HTTP_Handler(srv))
-	r.POST("/addConsumer", _Chat_AddConsumer0_HTTP_Handler(srv))
-	r.POST("/delConsumer", _Chat_DelConsumer0_HTTP_Handler(srv))
-	r.POST("/subscribe", _Chat_Subscribe0_HTTP_Handler(srv))
-	r.POST("/sendMessage", _Chat_SendMessage0_HTTP_Handler(srv))
-	r.POST("/login/{username}", _Chat_Login0_HTTP_Handler(srv))
-	r.POST("/logout/{username}", _Chat_Logout0_HTTP_Handler(srv))
-	r.POST("/getSetPeopleNum", _Chat_GetSetPeopleNum0_HTTP_Handler(srv))
-	r.POST("/getSetPeople", _Chat_GetSetPeople0_HTTP_Handler(srv))
+	r.GET("api/test/{name}", _Chat_SayHello0_HTTP_Handler(srv))
+	r.POST("api/createConsumerGroup", _Chat_CreateConsumerGroup0_HTTP_Handler(srv))
+	r.POST("api/createStream", _Chat_CreateStream0_HTTP_Handler(srv))
+	r.POST("api/delConsumerGroup", _Chat_DelConsumerGroup0_HTTP_Handler(srv))
+	r.POST("api/addConsumer", _Chat_AddConsumer0_HTTP_Handler(srv))
+	r.POST("api/delConsumer", _Chat_DelConsumer0_HTTP_Handler(srv))
+	r.POST("api/subscribe", _Chat_Subscribe0_HTTP_Handler(srv))
+	r.POST("api/sendMessage", _Chat_SendMessage0_HTTP_Handler(srv))
+	r.POST("api/login/{username}", _Chat_Login0_HTTP_Handler(srv))
+	r.POST("api/logout/{username}", _Chat_Logout0_HTTP_Handler(srv))
+	r.POST("api/getSetPeopleNum", _Chat_GetSetPeopleNum0_HTTP_Handler(srv))
+	r.POST("api/getSetPeople", _Chat_GetSetPeople0_HTTP_Handler(srv))
 }
 
 func _Chat_SayHello0_HTTP_Handler(srv ChatHTTPServer) func(ctx http.Context) error {
@@ -360,7 +360,7 @@ func NewChatHTTPClient(client *http.Client) ChatHTTPClient {
 
 func (c *ChatHTTPClientImpl) AddConsumer(ctx context.Context, in *AddConsumerRequest, opts ...http.CallOption) (*AddConsumerReply, error) {
 	var out AddConsumerReply
-	pattern := "/addConsumer"
+	pattern := "api/addConsumer"
 	path := binding.EncodeURL(pattern, in, false)
 	opts = append(opts, http.Operation(OperationChatAddConsumer))
 	opts = append(opts, http.PathTemplate(pattern))
@@ -373,7 +373,7 @@ func (c *ChatHTTPClientImpl) AddConsumer(ctx context.Context, in *AddConsumerReq
 
 func (c *ChatHTTPClientImpl) CreateConsumerGroup(ctx context.Context, in *CreateConsumerGroupRequest, opts ...http.CallOption) (*CreateConsumerGroupReply, error) {
 	var out CreateConsumerGroupReply
-	pattern := "/createConsumerGroup"
+	pattern := "api/createConsumerGroup"
 	path := binding.EncodeURL(pattern, in, false)
 	opts = append(opts, http.Operation(OperationChatCreateConsumerGroup))
 	opts = append(opts, http.PathTemplate(pattern))
@@ -386,7 +386,7 @@ func (c *ChatHTTPClientImpl) CreateConsumerGroup(ctx context.Context, in *Create
 
 func (c *ChatHTTPClientImpl) CreateStream(ctx context.Context, in *CreateStreamRequest, opts ...http.CallOption) (*CreateStreamReply, error) {
 	var out CreateStreamReply
-	pattern := "/createStream"
+	pattern := "api/createStream"
 	path := binding.EncodeURL(pattern, in, false)
 	opts = append(opts, http.Operation(OperationChatCreateStream))
 	opts = append(opts, http.PathTemplate(pattern))
@@ -399,7 +399,7 @@ func (c *ChatHTTPClientImpl) CreateStream(ctx context.Context, in *CreateStreamR
 
 func (c *ChatHTTPClientImpl) DelConsumer(ctx context.Context, in *DelConsumerRequest, opts ...http.CallOption) (*DelConsumerReply, error) {
 	var out DelConsumerReply
-	pattern := "/delConsumer"
+	pattern := "api/delConsumer"
 	path := binding.EncodeURL(pattern, in, false)
 	opts = append(opts, http.Operation(OperationChatDelConsumer))
 	opts = append(opts, http.PathTemplate(pattern))
@@ -412,7 +412,7 @@ func (c *ChatHTTPClientImpl) DelConsumer(ctx context.Context, in *DelConsumerReq
 
 func (c *ChatHTTPClientImpl) DelConsumerGroup(ctx context.Context, in *DelConsumerGroupRequest, opts ...http.CallOption) (*DelConsumerGroupReply, error) {
 	var out DelConsumerGroupReply
-	pattern := "/delConsumerGroup"
+	pattern := "api/delConsumerGroup"
 	path := binding.EncodeURL(pattern, in, false)
 	opts = append(opts, http.Operation(OperationChatDelConsumerGroup))
 	opts = append(opts, http.PathTemplate(pattern))
@@ -425,7 +425,7 @@ func (c *ChatHTTPClientImpl) DelConsumerGroup(ctx context.Context, in *DelConsum
 
 func (c *ChatHTTPClientImpl) GetSetPeople(ctx context.Context, in *GetSetPeopleRequest, opts ...http.CallOption) (*GetSetPeopleReply, error) {
 	var out GetSetPeopleReply
-	pattern := "/getSetPeople"
+	pattern := "api/getSetPeople"
 	path := binding.EncodeURL(pattern, in, false)
 	opts = append(opts, http.Operation(OperationChatGetSetPeople))
 	opts = append(opts, http.PathTemplate(pattern))
@@ -438,7 +438,7 @@ func (c *ChatHTTPClientImpl) GetSetPeople(ctx context.Context, in *GetSetPeopleR
 
 func (c *ChatHTTPClientImpl) GetSetPeopleNum(ctx context.Context, in *GetSetPeopleNumRequest, opts ...http.CallOption) (*GetSetPeopleNumReply, error) {
 	var out GetSetPeopleNumReply
-	pattern := "/getSetPeopleNum"
+	pattern := "api/getSetPeopleNum"
 	path := binding.EncodeURL(pattern, in, false)
 	opts = append(opts, http.Operation(OperationChatGetSetPeopleNum))
 	opts = append(opts, http.PathTemplate(pattern))
@@ -451,7 +451,7 @@ func (c *ChatHTTPClientImpl) GetSetPeopleNum(ctx context.Context, in *GetSetPeop
 
 func (c *ChatHTTPClientImpl) Login(ctx context.Context, in *LoginRequest, opts ...http.CallOption) (*LoginReply, error) {
 	var out LoginReply
-	pattern := "/login/{username}"
+	pattern := "api/login/{username}"
 	path := binding.EncodeURL(pattern, in, false)
 	opts = append(opts, http.Operation(OperationChatLogin))
 	opts = append(opts, http.PathTemplate(pattern))
@@ -464,7 +464,7 @@ func (c *ChatHTTPClientImpl) Login(ctx context.Context, in *LoginRequest, opts .
 
 func (c *ChatHTTPClientImpl) Logout(ctx context.Context, in *LogoutRequest, opts ...http.CallOption) (*LogoutReply, error) {
 	var out LogoutReply
-	pattern := "/logout/{username}"
+	pattern := "api/logout/{username}"
 	path := binding.EncodeURL(pattern, in, false)
 	opts = append(opts, http.Operation(OperationChatLogout))
 	opts = append(opts, http.PathTemplate(pattern))
@@ -477,7 +477,7 @@ func (c *ChatHTTPClientImpl) Logout(ctx context.Context, in *LogoutRequest, opts
 
 func (c *ChatHTTPClientImpl) SayHello(ctx context.Context, in *HelloRequest, opts ...http.CallOption) (*HelloReply, error) {
 	var out HelloReply
-	pattern := "/test/{name}"
+	pattern := "api/test/{name}"
 	path := binding.EncodeURL(pattern, in, true)
 	opts = append(opts, http.Operation(OperationChatSayHello))
 	opts = append(opts, http.PathTemplate(pattern))
@@ -490,7 +490,7 @@ func (c *ChatHTTPClientImpl) SayHello(ctx context.Context, in *HelloRequest, opt
 
 func (c *ChatHTTPClientImpl) SendMessage(ctx context.Context, in *SendMessageRequest, opts ...http.CallOption) (*SendMessageReply, error) {
 	var out SendMessageReply
-	pattern := "/sendMessage"
+	pattern := "api/sendMessage"
 	path := binding.EncodeURL(pattern, in, false)
 	opts = append(opts, http.Operation(OperationChatSendMessage))
 	opts = append(opts, http.PathTemplate(pattern))
@@ -503,7 +503,7 @@ func (c *ChatHTTPClientImpl) SendMessage(ctx context.Context, in *SendMessageReq
 
 func (c *ChatHTTPClientImpl) Subscribe(ctx context.Context, in *SubscribeRequest, opts ...http.CallOption) (*SubscribeReply, error) {
 	var out SubscribeReply
-	pattern := "/subscribe"
+	pattern := "api/subscribe"
 	path := binding.EncodeURL(pattern, in, false)
 	opts = append(opts, http.Operation(OperationChatSubscribe))
 	opts = append(opts, http.PathTemplate(pattern))

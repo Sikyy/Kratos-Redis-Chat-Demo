@@ -10,79 +10,79 @@ service Chat {
   
   rpc SayHello (HelloRequest) returns (HelloReply) {
     option (google.api.http) = {
-      get: "/test/{name}"
+      get: "api/test/{name}"
     };
   }
 
   rpc CreateConsumerGroup (CreateConsumerGroupRequest) returns (CreateConsumerGroupReply) {
     option (google.api.http) = {
-      post: "/createConsumerGroup"
+      post: "api/createConsumerGroup"
       body: "*"
     };
   }
 
   rpc CreateStream (CreateStreamRequest) returns (CreateStreamReply) {
     option (google.api.http) = {
-      post: "/createStream"
+      post: "api/createStream"
       body: "*"
     };
   }
 
   rpc DelConsumerGroup (DelConsumerGroupRequest) returns (DelConsumerGroupReply) {
     option (google.api.http) = {
-      post: "/delConsumerGroup"
+      post: "api/delConsumerGroup"
       body: "*"
     };
   }
 
   rpc AddConsumer (AddConsumerRequest) returns (AddConsumerReply) {
     option (google.api.http) = {
-      post: "/addConsumer"
+      post: "api/addConsumer"
       body: "*"
     };
   }
 
   rpc DelConsumer (DelConsumerRequest) returns (DelConsumerReply) {
     option (google.api.http) = {
-      post: "/delConsumer"
+      post: "api/delConsumer"
       body: "*"
     };
   }
   //订阅主题
   rpc Subscribe (SubscribeRequest) returns (SubscribeReply) {
     option (google.api.http) = {
-      post: "/subscribe"
+      post: "api/subscribe"
       body: "*"
     };
   }
   //发送消息/如果主题不存在，则自动创建主题
   rpc SendMessage (SendMessageRequest) returns (SendMessageReply) {
     option (google.api.http) = {
-      post: "/sendMessage"
+      post: "api/sendMessage"
       body: "*"
     };
   }
   rpc Login (LoginRequest) returns (LoginReply) {
     option (google.api.http) = {
-      post: "/login/{username}"
+      post: "api/login/{username}"
       body: "*"
     };
   }
   rpc Logout (LogoutRequest) returns (LogoutReply) {
     option (google.api.http) = {
-      post: "/logout/{username}"
+      post: "api/logout/{username}"
       body: "*"
     };
   }
   rpc GetSetPeopleNum (GetSetPeopleNumRequest) returns (GetSetPeopleNumReply) {
     option (google.api.http) = {
-      post: "/getSetPeopleNum"
+      post: "api/getSetPeopleNum"
       body: "*"
     };
   }
   rpc GetSetPeople (GetSetPeopleRequest) returns (GetSetPeopleReply) {
     option (google.api.http) = {
-      post: "/getSetPeople"
+      post: "api/getSetPeople"
       body: "*"
     };
   }

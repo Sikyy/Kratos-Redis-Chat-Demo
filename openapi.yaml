@@ -6,7 +6,7 @@ info:
     title: Chat API
     version: 0.0.1
 paths:
-    /addConsumer:
+    api/addConsumer:
         post:
             tags:
                 - Chat
@@ -24,7 +24,7 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/helloworld.v1.AddConsumerReply'
-    /createConsumerGroup:
+    api/createConsumerGroup:
         post:
             tags:
                 - Chat
@@ -42,7 +42,7 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/helloworld.v1.CreateConsumerGroupReply'
-    /createStream:
+    api/createStream:
         post:
             tags:
                 - Chat
@@ -60,7 +60,7 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/helloworld.v1.CreateStreamReply'
-    /delConsumer:
+    api/delConsumer:
         post:
             tags:
                 - Chat
@@ -78,7 +78,7 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/helloworld.v1.DelConsumerReply'
-    /delConsumerGroup:
+    api/delConsumerGroup:
         post:
             tags:
                 - Chat
@@ -96,7 +96,7 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/helloworld.v1.DelConsumerGroupReply'
-    /getSetPeople:
+    api/getSetPeople:
         post:
             tags:
                 - Chat
@@ -114,7 +114,7 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/helloworld.v1.GetSetPeopleReply'
-    /getSetPeopleNum:
+    api/getSetPeopleNum:
         post:
             tags:
                 - Chat
@@ -132,7 +132,7 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/helloworld.v1.GetSetPeopleNumReply'
-    /login/{username}:
+    api/login/{username}:
         post:
             tags:
                 - Chat
@@ -156,7 +156,7 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/helloworld.v1.LoginReply'
-    /logout/{username}:
+    api/logout/{username}:
         post:
             tags:
                 - Chat
@@ -180,7 +180,7 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/helloworld.v1.LogoutReply'
-    /sendMessage:
+    api/sendMessage:
         post:
             tags:
                 - Chat
@@ -199,7 +199,7 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/helloworld.v1.SendMessageReply'
-    /subscribe:
+    api/subscribe:
         post:
             tags:
                 - Chat
@@ -218,7 +218,7 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/helloworld.v1.SubscribeReply'
-    /test/{name}:
+    api/test/{name}:
         get:
             tags:
                 - Chat
